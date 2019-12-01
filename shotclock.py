@@ -1,6 +1,7 @@
 from samplebase import SampleBase
 from rgbmatrix import graphics
 import time
+import socket
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
@@ -8,6 +9,18 @@ class RunText(SampleBase):
         super(RunText, self).__init__(*args, **kwargs)
 
     def run(self):
+        # bluetooth server
+        print("wait for bluetooth connection")
+        hostMACAddress = "B8:27:EB:25:33:99"
+        port = 1
+        backlog = 1
+        size = 1024
+        s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+        s.bind((hostMACAddress,port))
+        s.listen(backlog)
+        client, address = s.accept()
+        print("bluetooth connected")
+
         offset_canvas = self.matrix.CreateFrameCanvas()
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
@@ -16,6 +29,7 @@ class RunText(SampleBase):
         i = 0
 
         while True:
+            data = client.recv(size)
            # for i in range(32):
             #    for j in range(32):
            # offset_canvas.Clear()
@@ -27,12 +41,17 @@ class RunText(SampleBase):
 #            offset_canvas.SetPixel(31,31,255,0,255)
                #     time.sleep(0.1)
 #                    offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
-            text = ["00","11","22","33","44","55","66","77","88","99"]
-            i = i+1
-            if i == 1:
-                graphics.DrawText(offscreen_canvas, font, 0, 31, textColor, text[i%10])
+#            text = ["00","11","22","33","44","55","66","77","88","99"]
+ #           i = i+1
+#            if i == 1:
+            if data:
+                print(str(data))
+                text = str(data).split("'")[1].strip("'")
+                print(text)
+                offscreen_canvas.Clear()
+                graphics.DrawText(offscreen_canvas, font, 0, 31, textColor, text)
                 offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-            offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
+           # offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
 #            time.sleep(0.5)
 
