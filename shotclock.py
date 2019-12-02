@@ -2,6 +2,9 @@ from samplebase import SampleBase
 from rgbmatrix import graphics
 import time
 import socket
+import subprocess
+
+#TODO: create log file
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
@@ -11,7 +14,12 @@ class RunText(SampleBase):
     def run(self):
         # bluetooth server
         print("wait for bluetooth connection")
-        hostMACAddress = "B8:27:EB:25:33:99"
+        cmd = "hciconfig"
+        device_id = "hci0"
+        status, output = subprocess.getstatusoutput(cmd)
+        bt_mac = output.split("{}:".format(device_id))[1].split("BD Address: ")[1].split(" ")[0].strip()
+#        hostMACAddress = "B8:27:EB:25:33:99"
+        hostMACAddress = bt_mac
         port = 1
         backlog = 1
         size = 1024
@@ -60,6 +68,12 @@ if __name__=="__main__":
   #  simple_square=SimpleSquare()
 #    if(not simple_square.process()):
  #       simple_square.print_help()
-    run_text = RunText()
-    if (not run_text.process()):
-        run_text.print_help()
+    while True:
+        try:
+            print("Start shotclock")
+            run_text = RunText()
+            if (not run_text.process()):
+                run_text.print_help()
+        except:
+            print("Lost connection")
+            time.sleep(5)
