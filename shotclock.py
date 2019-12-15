@@ -20,11 +20,13 @@ class RunText(SampleBase):
         bt_mac = output.split("{}:".format(device_id))[1].split("BD Address: ")[1].split(" ")[0].strip()
 #        hostMACAddress = "B8:27:EB:25:33:99"
         hostMACAddress = bt_mac
+        print(bt_mac)
         port = 1
         backlog = 1
         size = 1024
         s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
         s.bind((hostMACAddress,port))
+        print("here")
         s.listen(backlog)
         client, address = s.accept()
         print("bluetooth connected")
@@ -32,7 +34,8 @@ class RunText(SampleBase):
         offset_canvas = self.matrix.CreateFrameCanvas()
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
-        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockNumbers.bdf")
+#        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockNumbers.bdf")
+        font.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/7x14.bdf")
         textColor = graphics.Color(255,255,0)
         i = 0
 
