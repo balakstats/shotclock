@@ -3,6 +3,7 @@ from rgbmatrix import graphics
 import time
 import socket
 import subprocess
+import sys
 
 #TODO: create log file
 
@@ -12,15 +13,14 @@ class RunText(SampleBase):
         super(RunText, self).__init__(*args, **kwargs)
 
     def run(self):
-        # bluetooth server
+        # start bluetooth server
         cmd = "hciconfig"
         device_id = "hci0"
         status, output = subprocess.getstatusoutput(cmd)
         bt_mac = output.split("{}:".format(device_id))[1].split("BD Address: ")[1].split(" ")[0].strip()
-#        hostMACAddress = "B8:27:EB:25:33:99"
         hostMACAddress = bt_mac
         print(bt_mac)
-        port = 2
+        port = 1
         backlog = 1
         size = 1024
         s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
@@ -33,117 +33,92 @@ class RunText(SampleBase):
 #        offset_canvas    = self.matrix.CreateFrameCanvas()
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
-#        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockNumbers.bdf")
-        font.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/7x14.bdf")
+        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockNumbers3.bdf")
+#        font.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/10x20.bdf")
         font1 = graphics.Font()
-        font1.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/4x6.bdf")
+        font1.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/5x7.bdf")
         textColor = graphics.Color(255,255,0)
-        textColor2 = graphics.Color(255,0,0)
-        i = 0
-        x=0
-        y=0
-        text1= " 1:"
-        text2= " 2:"
-        text3= " 3:"
-        text4= " 4:"
-        text5= " 5:"
-        text6= " 6:"
-        text7= " 7:"
-        text8= " 8:"
-        text9= " 9:"
-        text10="10:"
-        text11="11:"
-        text12="12:"
-        text13="13:"
-        textS="*"
-#        text4="4: ***"
-#        text4="4: ***"
-#        text4="4: ***"
-  #      offscreen_canvas.Clear()
+        textColorRed = graphics.Color(255,0,0)
+        textColorGreen = graphics.Color(0,255,0)
+        textColorBlue = graphics.Color(0,0,255)
+        textColorWhite = graphics.Color(255,255,255)
+
+        player_blue = [{"X":192,"Y":8,"T":" 1:","A":0},{"X":192,"Y":15,"T":" 2:","A":0},{"X":192,"Y":22,"T":" 3:","A":0},{"X":192,"Y":29,"T":" 4:","A":0}
+                      ,{"X":0,"Y":6,"T":" 5:","A":0},{"X":0,"Y":13,"T":" 6:","A":0},{"X":0,"Y":22,"T":" 7:","A":0},{"X":0,"Y":29,"T":" 8:","A":0}
+                      ,{"X":224,"Y":8,"T":" 9:","A":0},{"X":224,"Y":15,"T":"10:","A":0},{"X":224,"Y":22,"T":"11:","A":0},{"X":224,"Y":29,"T":"12:","A":0}
+                     ,{"X":32,"Y":6,"T":"13:","A":0}]
+
+        player_white = [{"X":321,"Y":8,"T":" 1:","A":0},{"X":321,"Y":15,"T":" 2:","A":0},{"X":321,"Y":22,"T":" 3:","A":0},{"X":321,"Y":29,"T":" 4:","A":0}
+                       ,{"X":129,"Y":6,"T":" 5:","A":0},{"X":129,"Y":13,"T":" 6:","A":0},{"X":129,"Y":22,"T":" 7:","A":0},{"X":129,"Y":29,"T":" 8:","A":0}
+                       ,{"X":353,"Y":8,"T":" 9:","A":0},{"X":353,"Y":15,"T":"10:","A":0},{"X":353,"Y":22,"T":"11:","A":0},{"X":353,"Y":29,"T":"12:","A":0}
+                       ,{"X":161,"Y":6,"T":"13:","A":0}]
+
         print("Draw!")
-   #     offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-        textT="-:-"
-        textR="-:-"
+        textTime="-:-"
+        textResult="-:-"
+
         while True:
             offscreen_canvas.Clear()
-#            graphics.DrawText(offscreen_canvas, font,  0, 15, textColor, text2)
- #           graphics.DrawText(offscreen_canvas, font,  0, 0, textColor, text3)
-    #        offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-#            offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
-            graphics.DrawText(offscreen_canvas, font1, 192,  5, textColor, text1)
-            graphics.DrawText(offscreen_canvas, font1, 192, 11, textColor, text2)
-            graphics.DrawText(offscreen_canvas, font1, 192, 17, textColor, text3)
-            graphics.DrawText(offscreen_canvas, font1, 208, 17, textColor2, textS)
-            graphics.DrawText(offscreen_canvas, font1, 212, 17, textColor2, textS)
-            graphics.DrawText(offscreen_canvas, font1, 192, 23, textColor, text4)
-            graphics.DrawText(offscreen_canvas, font1, 192, 29, textColor, text5)
-            graphics.DrawText(offscreen_canvas, font1,   0,  5, textColor, text6)
-            graphics.DrawText(offscreen_canvas, font1,   0, 11, textColor, text7)
-            graphics.DrawText(offscreen_canvas, font1,   0, 17, textColor, text8)
-            graphics.DrawText(offscreen_canvas, font1,   0, 23, textColor, text9)
-            graphics.DrawText(offscreen_canvas, font1,   0, 29, textColor, text10)
-            graphics.DrawText(offscreen_canvas, font1,   16, 29, textColor2, textS)
-            graphics.DrawText(offscreen_canvas, font1,   224, 5, textColor, text11)
-            graphics.DrawText(offscreen_canvas, font1,   224, 11, textColor, text12)
-            graphics.DrawText(offscreen_canvas, font1,   224, 17, textColor2, text13)
-            graphics.DrawText(offscreen_canvas, font1,   240, 17, textColor2, textS)
-            graphics.DrawText(offscreen_canvas, font1,   244, 17, textColor2, textS)
-            graphics.DrawText(offscreen_canvas, font1,   248, 17, textColor2, textS)
+            i=0
+            for player in player_blue:
+                graphics.DrawText(offscreen_canvas, font1, player["X"], player["Y"], textColorBlue if player["A"]<3 else (textColorGreen if i==4 or i==5 or i==12 else textColorRed), player["T"])
+                if player["A"] > 0:
+                    graphics.DrawText(offscreen_canvas, font1, player["X"]+13, player["Y"], textColorGreen if i==4 or i==5 or i==12 else textColorRed, ("*" if player["A"]==1 else ("**" if player["A"]==2 else "***")))
+                i=i+1
+
+            i=0
+            for player in player_white:
+                graphics.DrawText(offscreen_canvas, font1, player["X"], player["Y"], textColorWhite if player["A"]<3 else (textColorGreen if i==4 or i==5 or i==12 else textColorRed), player["T"])
+                if player["A"] > 0:
+                    graphics.DrawText(offscreen_canvas, font1, player["X"]+13, player["Y"], textColorGreen if i==4 or i==5 or i==12 else textColorRed, ("*" if player["A"]==1 else ("**" if player["A"]==2 else "***")))
+                i=i+1
 
 
-            graphics.DrawText(offscreen_canvas, font1, 321,  5, textColor, text1)
-            graphics.DrawText(offscreen_canvas, font1, 321, 11, textColor, text2)
-            graphics.DrawText(offscreen_canvas, font1, 321, 17, textColor, text3)
-            graphics.DrawText(offscreen_canvas, font1, 321, 23, textColor, text4)
-            graphics.DrawText(offscreen_canvas, font1, 321, 29, textColor, text5)
-            graphics.DrawText(offscreen_canvas, font1, 129,  5, textColor, text6)
-            graphics.DrawText(offscreen_canvas, font1, 129, 11, textColor, text7)
-            graphics.DrawText(offscreen_canvas, font1, 129, 17, textColor, text8)
-            graphics.DrawText(offscreen_canvas, font1, 129, 23, textColor, text9)
-            graphics.DrawText(offscreen_canvas, font1, 129, 29, textColor, text10)
-            graphics.DrawText(offscreen_canvas, font1, 353,  5, textColor, text11)
-            graphics.DrawText(offscreen_canvas, font1, 353, 11, textColor, text12)
-            graphics.DrawText(offscreen_canvas, font1, 353, 17, textColor, text13)
-            
- #           graphics.DrawText(offscreen_canvas, font1, 192, 21, textColor, text4)
- #           graphics.DrawText(offscreen_canvas, font1, 192, 21, textColor, text4)
- #           graphics.DrawText(offscreen_canvas, font1, 192, 21, textColor, text4)
-
-            graphics.DrawText(offscreen_canvas, font, 260, 31, textColor, textT)
-            graphics.DrawText(offscreen_canvas, font, 68, 31, textColor, textR)
-
-#            offscreen_canvas.SetPixel(0,0,255,0,255)
-#            x=x+1
-#            if x==64:
-#                x=0
-
+            graphics.DrawText(offscreen_canvas, font, 253, 31, textColor, textTime)
+            tempText = textResult.split(":")
+            print(tempText[0])
+            if (tempText[0] != "-") and (int(tempText[0]) > 9):
+                x = 46
+            else:
+                x = 61
+            graphics.DrawText(offscreen_canvas, font, x, 31, textColor, textResult)
 
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
             data = client.recv(size)
-           # for i in range(32):
-            #    for j in range(32):
-           # offset_canvas.Clear()
-#            offscreen_canvas.Clear()
-#            offset_canvas.Clear() 
-#            offset_canvas.SetPixel(0,15,255,0,255)
-#            offset_canvas.SetPixel(20,20,255,0,255)
-#            offset_canvas.SetPixel(31,31,255,0,255)
-               #     time.sleep(0.1)
-#             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
-  #          text = ["00","11","22","33","44","55","66","77","88","99"]
- #           i = i+1
-#            if i == 1:
             if data:
-    #        if True:
-                print(str(data))
-                textT = str(data).split("'")[1].strip("'").split("#")[0]
-                textR = str(data).split("'")[1].strip("'").split("#")[1]
-#                print(text)
-#                text = "AAAAAABBB"
-#                offscreen_canvas.Clear()
-#                graphics.DrawText(offscreen_canvas, font, 80, 15, textColor, text)
-#                offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+                recText = str(data).split("'")[1].strip("'")
+                print(recText)
+                recText = recText.split("#")
+                for text in recText:
+                    print("text: "+text)
+                    tempText = text.split("%")
+                    if tempText[0] == "time":
+                        textTime = tempText[1]
+                        pause = False
+                        timeout = False
+                        print("time: "+textTime)
+                    elif tempText[0] == "result":
+                        textResult = tempText[1]
+                        print("result: "+textResult)
+                    elif tempText[0] == "player":
+                        print(tempText[0])
+                        print(tempText[1])
+                        print(tempText[2])
+                        print(tempText[3])
+                        if tempText[1].lower() == "blue":
+                            player_blue[int(tempText[2])-1]["A"] = int(tempText[3])
+                        else:
+                            player_white[int(tempText[2])-1]["A"] = int(tempText[3])
+                    elif tempText[0] == "brightness":
+                        if int(tempText[1]) > 0 and int(tempText[1]) <= 100:
+                            print("brightness: "+tempText[1])
+                            self.matrix.brightness = int(tempText[1])
+                    elif tempText[0] == "pause":
+                        pause = True
+                    elif tempText[0] == "timeout":
+                        timeout = True
+
             time.sleep(0.1)
 
 
@@ -151,12 +126,13 @@ if __name__=="__main__":
   #  simple_square=SimpleSquare()
 #    if(not simple_square.process()):
  #       simple_square.print_help()
-#    while True:
-#    try:
-    print("Start shotclock")
-    run_text = RunText()
-    if (not run_text.process()):
-        run_text.print_help()
- #   except:
-  #      print("Lost connection")
-   #     time.sleep(5)
+    while True:
+        try:
+            print("Start shotclock")
+            run_text = RunText()
+            time.sleep(3)
+            if (not run_text.process()):
+                run_text.print_help()
+        except:
+            print("Lost connection")
+            time.sleep(3)
