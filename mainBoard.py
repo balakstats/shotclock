@@ -33,14 +33,14 @@ class RunText(SampleBase):
 #        offset_canvas    = self.matrix.CreateFrameCanvas()
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
-        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockNumbers3.bdf")
+        font.LoadFont("/home/pi/Zeitnehmung/fonts/mainBoardFonts/timeNumbers.bdf")
 #        font.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/10x20.bdf")
         font1 = graphics.Font()
         font1.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/5x7.bdf")
         textColor = graphics.Color(255,255,0)
         textColorRed = graphics.Color(255,0,0)
         textColorGreen = graphics.Color(0,255,0)
-        textColorBlue = graphics.Color(0,0,255)
+        textColorBlue = graphics.Color(25,25,255)
         textColorWhite = graphics.Color(255,255,255)
 
         player_blue = [{"X":192,"Y":8,"T":" 1:","A":0},{"X":192,"Y":15,"T":" 2:","A":0},{"X":192,"Y":22,"T":" 3:","A":0},{"X":192,"Y":29,"T":" 4:","A":0}
@@ -56,6 +56,8 @@ class RunText(SampleBase):
         print("Draw!")
         textTime="-:-"
         textResult="-:-"
+        textTeamBlue="---"
+        textTeamWhite="---"
 
         while True:
             offscreen_canvas.Clear()
@@ -82,6 +84,9 @@ class RunText(SampleBase):
             else:
                 x = 61
             graphics.DrawText(offscreen_canvas, font, x, 31, textColor, textResult)
+
+            graphics.DrawText(offscreen_canvas, font1, 32, 29, textColor, textTeamBlue)
+            graphics.DrawText(offscreen_canvas, font1, 161, 29, textColor, textTeamWhite)
 
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
@@ -118,6 +123,12 @@ class RunText(SampleBase):
                         pause = True
                     elif tempText[0] == "timeout":
                         timeout = True
+                    elif tempText[0] == "teamBlue":
+                        textTeamBlue = tempText[1]
+                        print("yes blue")
+                    elif tempText[0] == "teamWhite":
+                        textTeamWhite = tempText[1]
+                        print("yes white")
 
             time.sleep(0.1)
 
