@@ -5,12 +5,27 @@ import socket
 import subprocess
 import sys
 
+#import RPi.GPIO as gpio
+#gpio.setmode(gpio.BCM)
+#gpio.setup(6, gpio.OUT)
+#gpio.output(6, gpio.HIGH)
+#time.sleep(1)
+#gpio.output(6, gpio.LOW)
+#time.sleep(1)
+#gpio.output(6, gpio.HIGH)
+#time.sleep(1)
+#gpio.output(6, gpio.LOW)
+
+
+
 #TODO: create log file
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
 #        super(SimpleSquare, self).__init__(*args, **kwargs)
         super(RunText, self).__init__(*args, **kwargs)
+#        self.s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+
 
     def run(self):
         # start bluetooth server
@@ -90,47 +105,65 @@ class RunText(SampleBase):
 
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
-            data = client.recv(size)
+            try:
+                data = client.recv(size)
+            except:
+                print("lost connection")
+                time.sleep(5)
+                s.close()
+                time.sleep(1)
+                s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+                s.bind((hostMACAddress,port))
+                s.listen(backlog)
+                client, address = s.accept()
+
             if data:
                 recText = str(data).split("'")[1].strip("'")
                 print(recText)
                 recText = recText.split("#")
-                for text in recText:
-                    print("text: "+text)
-                    tempText = text.split("%")
-                    if tempText[0] == "time":
-                        textTime = tempText[1]
-                        pause = False
-                        timeout = False
-                        print("time: "+textTime)
-                    elif tempText[0] == "result":
-                        textResult = tempText[1]
-                        print("result: "+textResult)
-                    elif tempText[0] == "player":
-                        print(tempText[0])
-                        print(tempText[1])
-                        print(tempText[2])
-                        print(tempText[3])
-                        if tempText[1].lower() == "blue":
-                            player_blue[int(tempText[2])-1]["A"] = int(tempText[3])
-                        else:
-                            player_white[int(tempText[2])-1]["A"] = int(tempText[3])
-                    elif tempText[0] == "brightness":
-                        if int(tempText[1]) > 0 and int(tempText[1]) <= 100:
-                            print("brightness: "+tempText[1])
-                            self.matrix.brightness = int(tempText[1])
-                    elif tempText[0] == "pause":
-                        pause = True
-                    elif tempText[0] == "timeout":
-                        timeout = True
-                    elif tempText[0] == "teamBlue":
-                        textTeamBlue = tempText[1]
-                        print("yes blue")
-                    elif tempText[0] == "teamWhite":
-                        textTeamWhite = tempText[1]
-                        print("yes white")
+                try:
+                    for text in recText:
+                        print("text: "+text)
+                        tempText = text.split("%")
+                        if tempText[0] == "time":
+                            textTime = tempText[1]
+                            pause = False
+                            timeout = False
+                            print("time: "+textTime)
+                        elif tempText[0] == "result":
+                            textResult = tempText[1]
+                            print("result: "+textResult)
+                        elif tempText[0] == "player":
+                            print(tempText[0])
+                            print(tempText[1])
+                            print(tempText[2])
+                            print(tempText[3])
+                            if tempText[1].lower() == "blue":
+                                player_blue[int(tempText[2])-1]["A"] = int(tempText[3])
+                            else:
+                                player_white[int(tempText[2])-1]["A"] = int(tempText[3])
+                        elif tempText[0] == "brightness":
+                            if int(tempText[1]) > 0 and int(tempText[1]) <= 100:
+                                print("brightness: "+tempText[1])
+                                try:
+                                    self.matrix.brightness = int(tempText[1])
+                                except:
+                                    print("could not set brightness")
+                        elif tempText[0] == "pause":
+                            pause = True
+                        elif tempText[0] == "timeout":
+                            timeout = True
+                        elif tempText[0] == "teamBlue":
+                            textTeamBlue = tempText[1]
+                            print("yes blue")
+                        elif tempText[0] == "teamWhite":
+                            textTeamWhite = tempText[1]
+                            print("yes white")
+                except:
+                    print("could not process message")
+#                    if "brightness%*" in 
 
-            time.sleep(0.1)
+ #           time.sleep(0.05)
 
 
 if __name__=="__main__":
@@ -144,6 +177,6 @@ if __name__=="__main__":
             time.sleep(3)
             if (not run_text.process()):
                 run_text.print_help()
-        except:
-            print("Lost connection")
+        except Exception as ex:
+            print(ex)
             time.sleep(3)
