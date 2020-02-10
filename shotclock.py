@@ -12,7 +12,18 @@ class RunText(SampleBase):
         super(RunText, self).__init__(*args, **kwargs)
 
     def run(self):
-        # bluetooth server
+        # show initial value on shotclock
+        font = graphics.Font()
+        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockFonts/shotclockNumbers.bdf")
+        textColorGreen = graphics.Color(255,255,0) # green
+        textColorRed   = graphics.Color(255,0,0) # red
+
+        offscreen_canvas = self.matrix.CreateFrameCanvas()
+        offset_canvas = self.matrix.CreateFrameCanvas()
+        offscreen_canvas.Clear()
+        graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen, "--")
+        offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+
         print("wait for bluetooth connection")
         cmd = "hciconfig"
         device_id = "hci0"
@@ -30,45 +41,58 @@ class RunText(SampleBase):
         client, address = s.accept()
         print("bluetooth connected")
 
-        offset_canvas = self.matrix.CreateFrameCanvas()
-        offscreen_canvas = self.matrix.CreateFrameCanvas()
-        font = graphics.Font()
-        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockFonts/shotclockNumbers.bdf")
-        textColorGreen = graphics.Color(255,255,0) # green
-        textColorRed   = graphics.Color(255,0,0) # red
+        cool = True
+        shotclockText = "--"
 
-        i = 0
         while True:
+            if cool:
+                offscreen_canvas.Clear()
+                if shotclockText == "--":
+                    graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen, shotclockText)
+                else:
+                    graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen if int(shotclockText)>5 else textColorRed, shotclockText)
+                offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+                cool = False
+
             try:
                 data = client.recv(size)
             except Exception as ex:
                 print("Lost bluetooth connection")
+                offscreen_canvas.Clear()
+                graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen, "--")
+                offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
                 print(ex)
                 s.close()
-                time.sleep(0.5)
+                time.sleep(1)
                 s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
                 s.bind((hostMACAddress,port))
                 s.listen(backlog)
+                print("Wait for reconnect")
                 client, address = s.accept()
-#            offset_canvas.SetPixel(0,0,255,0,255)
 
-            try:
-                if data:
-                    print(str(data))
-                    text = str(data).split("'")[1].strip("'")
-                    print(text)
-                    offscreen_canvas.Clear()
-                    graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen if int(text)>5 else textColorRed, text)
-                    offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-            except Exceptiopn as ex:
-                print("could not process message")
-                print(ex)
-            time.sleep(0.3)
+            if data:
+                cool = True
+                recText = str(data).split("'")[1].strip("'")
+                print(recText)
+                recText = recText.split("#")
+                try:
+                    for text in recText:
+                        print("text: "+text)
+                        tempText = text.split("%")
+                        if tempText[0] == "time":
+                            shotclockText = tempText[1]
+                        elif tempText[0] == "brightness":
+                            if (int(tempText[1]) > 0) and (int(tempText[1]) <= 100):
+                                try:
+                                    self.matrix.brightness = int(tempText[1])
+                                except:
+                                    print("Could not set brightness")
+                except Exception as ex:
+                    print("could not process message")
+                    print(ex)
+
 
 if __name__=="__main__":
-  #  simple_square=SimpleSquare()
-#    if(not simple_square.process()):
- #       simple_square.print_help()
     print("Start shotclock")
     run_text = RunText()
     if (not run_text.process()):
