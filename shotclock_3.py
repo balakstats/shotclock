@@ -14,7 +14,7 @@ class RunText(SampleBase):
     def run(self):
         # show initial value on shotclock
         font_1 = graphics.Font()
-        font_1.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockFonts/shotclockNumbers_3.bdf")
+        font_1.LoadFont("/home/pi/Zeitnehmung/shotclock/fonts/shotclockFonts/numbersSevenSegment.bdf")
         font_2 = graphics.Font()
         font_2.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/10x20.bdf")
         textColorGreen = graphics.Color(255,255,0) # green
@@ -23,40 +23,55 @@ class RunText(SampleBase):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         offset_canvas = self.matrix.CreateFrameCanvas()
         offscreen_canvas.Clear()
-        graphics.DrawText(offscreen_canvas, font_1, 0, 31, textColorGreen, "--")
+        graphics.DrawText(offscreen_canvas, font_1, 0, 31, textColorGreen, "0")
         graphics.DrawText(offscreen_canvas, font_2, 32, 31, textColorGreen, "-")
         offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
-        print("wait for bluetooth connection")
-        cmd = "hciconfig"
-        device_id = "hci0"
-        status, output = subprocess.getstatusoutput(cmd)
-        bt_mac = output.split("{}:".format(device_id))[1].split("BD Address: ")[1].split(" ")[0].strip()
-        hostMACAddress = bt_mac
-        print(bt_mac)
-        port = 1
-        backlog = 1
-        size = 1024
-        s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-        s.bind((hostMACAddress,port))
-        s.listen(backlog)
-        print("Wait for bluetooth connection")
-        client, address = s.accept()
-        print("bluetooth connected")
+#        print("wait for bluetooth connection")
+#        cmd = "hciconfig"
+#        device_id = "hci0"
+#        status, output = subprocess.getstatusoutput(cmd)
+#        bt_mac = output.split("{}:".format(device_id))[1].split("BD Address: ")[1].split(" ")[0].strip()
+#        hostMACAddress = bt_mac
+#        print(bt_mac)
+#        port = 1
+#        backlog = 1
+#        size = 1024
+#        s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+#        s.bind((hostMACAddress,port))
+#        s.listen(backlog)
+#        print("Wait for bluetooth connection")
+#        client, address = s.accept()
+#        print("bluetooth connected")
 
         cool = True
-        shotclockText = "123"
+        shotclockText = "--"
 
         while True:
-            if cool:
-                offscreen_canvas.Clear()
-                if shotclockText == "--":
-                    graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen, shotclockText)
-                else:
-                    print("drin")
-                    graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen if int(shotclockText)>5 else textColorRed, shotclockText)
-                offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-                cool = False
+#            if cool:
+            x=0
+            y=50
+            while True:
+                try:
+                    print("x: "+str(x))
+                    print("y: "+str(y))
+                    if cool:
+                        offscreen_canvas.Clear()
+                        if shotclockText == "--":
+                            print("if")
+                            graphics.DrawText(offscreen_canvas, font_1, 16, 43, textColorGreen, "0")
+                            graphics.DrawText(offscreen_canvas, font_1, x, 48, textColorGreen, "1")
+                            graphics.DrawText(offscreen_canvas, font_1, x, 36, textColorGreen, "1")
+                        else:
+                            print("else")
+                            graphics.DrawText(offscreen_canvas, font, 0, 31, textColorGreen if int(shotclockText)>5 else textColorRed, shotclockText)
+                        offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+                    #    cool = False
+#                    x=x+1
+#                    y=y-1
+                    time.sleep(1)
+                except:
+                    return
 
             try:
                 data = client.recv(size)
