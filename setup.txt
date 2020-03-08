@@ -22,30 +22,33 @@ interfacing options
 Serial
 ----------------------------------------------------
 
-5. donwload and build HZeller library
-sudo apt-get update
-sudo apt-get install python3-dev python3-pillow -y
-
+5. install git
 sudo apt-get install git
-git clone https://github.com/hzeller/rpi-rgb-led-matrix.git
-cd rpi-rgb-led-matrix
+----------------------------------------------------
 
-sudo make build-python PYTHON=$(which python3)
+6. install hezeller
+git clone https://github.com/hzeller/rpi-rgb-led-matrix.git
+----------------------------------------------------
+
+7. build and install
+cd rpi-rgb-led-matrix
+sudo apt-get update && sudo apt-get install python3-dev python3-pillow -y
+make build-python PYTHON=$(which python3)
 sudo make install-python PYTHON=$(which python3)
 ----------------------------------------------------
 
-6. Create auto start with bluetooth turn on
+8. Create auto start with bluetooth turn on
 sudo nano /etc/rc.local
 echo "discoverable on \nquit" | bluetoothctl
 /home/pi/shotclock/startup_3.sh &
 sudo chmod +x /etc/rc.local
 ----------------------------------------------------
 
-7. Clone git repository
+9. Clone git own repository
 git clone https://github.com/balakstats/shotclock.git
 ----------------------------------------------------
 
-8. copy relevant class into working directory
+10. copy relevant(samplebase.py) class into working directory
 cp /home/pi/rpi-rgb-led-matrix/bindings/python/samples/samplebase.py /home/pi/shotclock/samplebase.py
 ----------------------------------------------------
 
