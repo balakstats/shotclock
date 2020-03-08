@@ -8,6 +8,7 @@ Desktop/CLI
 ...
 ----------------------------------------------------
 
+
 3. turn off sound chip
 sudo nano /etc/modprobe.d/alsa-blacklist.conf
 >>blacklist snd_bcm2835
