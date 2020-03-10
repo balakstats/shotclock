@@ -55,6 +55,7 @@ class RunText(SampleBase):
         timeText      = "-:--"
         timeTextColor = textColorGreen
         shotclockTextColor = textColorGreen
+        data = False
         while True:
             if cool:
                 offscreen_canvas.Clear()
