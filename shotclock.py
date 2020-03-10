@@ -14,7 +14,7 @@ class RunText(SampleBase):
     def run(self):
         # show initial value on shotclock
         font = graphics.Font()
-        font.LoadFont("/home/pi/Zeitnehmung/fonts/shotclockFonts/shotclockNumbers.bdf")
+        font.LoadFont("/home/pi/shotclock/fonts/shotclockFonts/shotclockNumbers.bdf")
         textColorGreen = graphics.Color(255,255,0) # green
         textColorRed   = graphics.Color(255,0,0) # red
 
