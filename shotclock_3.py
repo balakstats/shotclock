@@ -211,7 +211,7 @@ class RunText(SampleBase):
                                 shotclockText      = tempText[1]
                                 shotclockTextColor = tempText[2]
                                 short              = int(tempText[3])
-                            elif tempText[0] == "time":
+                            elif segments == 3 and tempText[0] == "time":
                                 print("set timeText: "+tempText[1])
                                 timeText = tempText[1]
                                 timeTextColor = tempText[2]
