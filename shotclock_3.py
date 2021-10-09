@@ -15,10 +15,12 @@ class RunText(SampleBase):
         super(RunText, self).__init__(*args, **kwargs)
 
     def run(self):
-        f = open("segments.txt","r")
+        segments = 3
+        f = open("/home/pi/shotclock/segments.txt","r")
         lines = f.readlines()
-        print(lines)
-        #segment = 
+        line = lines[0].replace("\n","")
+        print(line)
+        segments = int(line)
         font_1 = graphics.Font()
         font_1.LoadFont("/home/pi/shotclock/fonts/shotclockFonts/numbersSevenSegment.bdf")
         font_2 = graphics.Font()
@@ -134,49 +136,50 @@ class RunText(SampleBase):
                     print("else --")
                     graphics.DrawText(offscreen_canvas, font_1,  0, 31, textColorGreen, "0")
                     graphics.DrawText(offscreen_canvas, font_1, 16, 31, textColorGreen, "0")
-                if timeText != "-:--":
-                    print("if 8:00")
-                    i = 0
-                    xH = 4
-                    xV = 3
-                    color = textColorGreen if timeTextColor=="default" else textColorRed
-                    graphics.DrawText(offscreen_canvas, font_2, 11,  4, color, "2")  # draw the colon :
-                    graphics.DrawText(offscreen_canvas, font_2, 11, 16, color, "2") # draw the colon :
-                    for ti in timeText:
-                        print(ti+": "+str(i))
-                        xH = xH if i==0 else(15 if i==1 else 23)
-                        xV = xV if i==0 else(14 if i==1 else 22)
-                        if ti == ":":
-                            continue
-                        if ti in {"0","2","3","5","6","7","8","9"}: #segment a
-                            graphics.DrawText(offscreen_canvas, font_2, xH,6, color, "0")
-                        if ti in {"0","1","2","3","4","7","8","9"}: # segment b
-                            graphics.DrawText(offscreen_canvas, font_2, xV+6, 8, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV+6, 2, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV+6, 3, color, "1")
-                        if ti in {"0","1","3","4","5","6","7","8","9"}: # segment c
-                            graphics.DrawText(offscreen_canvas, font_2, xV+6, 14, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV+6, 16, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV+6,  9, color, "1")
-                        if ti in {"2","3","4","5","6","8","9"}: # segment d
-                            graphics.DrawText(offscreen_canvas, font_2, xH,4, color, "0")
-                        if ti in {"0","2","6","8"}: # segment e
-                            graphics.DrawText(offscreen_canvas, font_2, xV, 14, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV, 16, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV,  9, color, "1")
-                        if ti in {"0","4","5","6","8","9"}: # segment f
-                            graphics.DrawText(offscreen_canvas, font_2, xV, 8, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV, 2, color, "2")
-                            graphics.DrawText(offscreen_canvas, font_2, xV, 3, color, "1")
-                        if ti in {"0","2","3","5","6","8","9"}: # segment g
-                            graphics.DrawText(offscreen_canvas, font_2, xH,10, color, "0")
+                if segments == 3:
+                    if timeText != "-:--":
+                        print("if 8:00")
+                        i = 0
+                        xH = 4
+                        xV = 3
+                        color = textColorGreen if timeTextColor=="default" else textColorRed
+                        graphics.DrawText(offscreen_canvas, font_2, 11,  4, color, "2")  # draw the colon :
+                        graphics.DrawText(offscreen_canvas, font_2, 11, 16, color, "2") # draw the colon :
+                        for ti in timeText:
+                            print(ti+": "+str(i))
+                            xH = xH if i==0 else(15 if i==1 else 23)
+                            xV = xV if i==0 else(14 if i==1 else 22)
+                            if ti == ":":
+                                continue
+                            if ti in {"0","2","3","5","6","7","8","9"}: #segment a
+                                graphics.DrawText(offscreen_canvas, font_2, xH,6, color, "0")
+                            if ti in {"0","1","2","3","4","7","8","9"}: # segment b
+                                graphics.DrawText(offscreen_canvas, font_2, xV+6, 8, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV+6, 2, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV+6, 3, color, "1")
+                            if ti in {"0","1","3","4","5","6","7","8","9"}: # segment c
+                                graphics.DrawText(offscreen_canvas, font_2, xV+6, 14, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV+6, 16, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV+6,  9, color, "1")
+                            if ti in {"2","3","4","5","6","8","9"}: # segment d
+                                graphics.DrawText(offscreen_canvas, font_2, xH,4, color, "0")
+                            if ti in {"0","2","6","8"}: # segment e
+                                graphics.DrawText(offscreen_canvas, font_2, xV, 14, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV, 16, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV,  9, color, "1")
+                            if ti in {"0","4","5","6","8","9"}: # segment f
+                                graphics.DrawText(offscreen_canvas, font_2, xV, 8, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV, 2, color, "2")
+                                graphics.DrawText(offscreen_canvas, font_2, xV, 3, color, "1")
+                            if ti in {"0","2","3","5","6","8","9"}: # segment g
+                                graphics.DrawText(offscreen_canvas, font_2, xH,10, color, "0")
 
-                        i = i + 1
-                else:
-                    print("else --:--")
-                    graphics.DrawText(offscreen_canvas, font_2, 2,  4, textColorGreen, "0")
-                    graphics.DrawText(offscreen_canvas, font_2, 13, 4, textColorGreen, "0")
-                    graphics.DrawText(offscreen_canvas, font_2, 21, 4, textColorGreen, "0")
+                            i = i + 1
+                    else:
+                        print("else --:--")
+                        graphics.DrawText(offscreen_canvas, font_2, 2,  4, textColorGreen, "0")
+                        graphics.DrawText(offscreen_canvas, font_2, 13, 4, textColorGreen, "0")
+                        graphics.DrawText(offscreen_canvas, font_2, 21, 4, textColorGreen, "0")
                 offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
             try:
                 data = client.recv(size)
