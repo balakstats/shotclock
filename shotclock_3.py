@@ -15,6 +15,10 @@ class RunText(SampleBase):
         super(RunText, self).__init__(*args, **kwargs)
 
     def run(self):
+        f = open("segments.txt","r")
+        lines = f.readlines()
+        print(lines)
+        #segment = 
         font_1 = graphics.Font()
         font_1.LoadFont("/home/pi/shotclock/fonts/shotclockFonts/numbersSevenSegment.bdf")
         font_2 = graphics.Font()
