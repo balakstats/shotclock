@@ -20,7 +20,8 @@ class RunText(SampleBase):
         lines = f.readlines()
         line = lines[0].replace("\n","")
         print(line)
-        segments = int(line)
+        if line.isdigit():
+            segments = int(line)
         font_1 = graphics.Font()
         font_1.LoadFont("/home/pi/shotclock/fonts/shotclockFonts/numbersSevenSegment.bdf")
         font_2 = graphics.Font()
