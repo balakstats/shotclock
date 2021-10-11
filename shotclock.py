@@ -217,7 +217,7 @@ class RunText(SampleBase):
                                 timeText = tempText[1]
                                 timeTextColor = tempText[2]
                             elif tempText[0] == "brightness":
-                                if (int(tempText[1]) > 0) and (int(tempText[1]) <= 100):
+                                if (tempText[1].isdigit()) and (int(tempText[1]) > 0) and (int(tempText[1]) <= 100):
                                     try:
                                         self.matrix.brightness = int(tempText[1])
                                     except:
